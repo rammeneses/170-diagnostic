@@ -81,13 +81,14 @@ def main():
         [4,5,6],
         [7,8,0],
     ]
-    z_loc = get_z_loc(test)
+    state = test
+    z_loc = get_z_loc(state)
     # Main loop
     while True:
-        print_state(test)
+        print_state(state)
         inp = input("Move? ")
         # store the return value of move_match()
-        temp = move_match(inp, test, z_loc)
+        temp = move_match(inp, state, z_loc)
         # None represents an invalid move, Catch it here
         # Update z_loc only if we get a tuple as a return value
         if temp:
