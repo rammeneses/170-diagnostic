@@ -20,7 +20,7 @@ def clear_terminal():
 # https://stackoverflow.com/questions/3523174/raw-input-without-pressing-enter
 # https://code.activestate.com/recipes/134892-getch-like-unbuffered-character-reading-from-stdin/
 def read_input(to_print):
-    # print(to_print)
+    print(to_print)
     if os.name == 'nt':
         return msvcrt.getch()
     else:
