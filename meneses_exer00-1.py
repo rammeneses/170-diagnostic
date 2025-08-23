@@ -51,7 +51,39 @@ def get_file_input():
     #     print(z_loc)
     return (temp, z_loc)
 
-    
+# Source: what I remember doing for my last 170 take TT
+def verify_solvable(state):
+    # put list of lists of ints into a single list
+    temp = flatten_list(state)
+
+    # Check and count inversions
+    inversions = count_inversions(temp)
+
+    # Evaluate the inversions
+    # Even means solvable for 8-puzzle
+    if inversions % 2 == 0:
+        return True
+    return False
+
+def count_inversions(temp):
+    # Check and count inversions
+    inversions = 0
+    for i in range(len(temp)):
+        for j in range(len(temp)):
+            if j <= i:
+                continue
+            if temp[i] > temp[j]:
+                if temp[j] != 0:
+                    inversions += 1
+    return inversions
+
+def flatten_list(state):
+    # put list of lists of ints into a single list
+    temp = []
+    for line in state:
+        for num in line:
+            temp.append(num)
+    return temp
 
 # Helper Variables
 row = 1
@@ -154,11 +186,17 @@ def main():
     state = test
     z_loc = get_z_loc(state)
     solved = False
+    solvable = verify_solvable(state)
+    # print(solvable)
     # Main loop
     while True:
         # clear_terminal()
         print(header)
         print_state(state)
+        if not solvable:
+            print("NOT SOLVABLE!")
+            windll.user32.MessageBoxW(0, "The Puzzle is not solvable!", "8-Puzzle", 0x00001010)
+
         if is_goal_state(state, goal): 
             if not solved:
                 # Taken from the answer from
@@ -175,8 +213,7 @@ def main():
                 from_file = get_file_input()
                 state = from_file[0]
                 z_loc = from_file[1]
-                print_state(state)
-                print(z_loc)
+                solvable = verify_solvable(state)
             case "0":
                 print("Goodbye!")
                 break
