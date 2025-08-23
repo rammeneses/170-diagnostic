@@ -17,6 +17,8 @@ def print_state(state):
         print()
 
 def move_match(input, state, z_loc):
+    # NOTE: The wasd keys represent movement of the NON-ZERO tiles
+    #   The dictionary values represent the movement of the ZERO tile
     move_list = {
         "w": "down",
         "W": "down",
@@ -27,7 +29,10 @@ def move_match(input, state, z_loc):
         "d": "left",
         "D": "left"
     }
+    # input verification
     if input in move_list.keys():
+        # Out of bounds check
+        # returns None 
         if move_list[input] == "down" and z_loc[y_axis] == 2:
             return
         if move_list[input] == "up" and z_loc[y_axis] == 0:
@@ -38,6 +43,8 @@ def move_match(input, state, z_loc):
             return
         
         # print(move_list[input])
+        # Returns the return value of move()
+        # which is a tuple of the new location of ZERO
         return move(move_list[input], state, z_loc)
         
             
@@ -64,32 +71,25 @@ def move(input, state, z_loc):
     state[z_loc[y_axis]][z_loc[x_axis]] = state[new_z_loc[y_axis]][new_z_loc[x_axis]]
     # since we know that 0 will be moved
     state[new_z_loc[y_axis]][new_z_loc[x_axis]] = 0
-    # update the location of zero
+    # return the updated location of zero
     return new_z_loc
-    
-            # # set the 0 to the number that it will swap with
-            # state[z_loc[y_axis]][z_loc[x_axis]] = state[z_loc[y_axis] - 1][z_loc[x_axis]]
-            # # since we know that 0 will be the only 
-            # state[z_loc[y_axis] - 1][z_loc[x_axis]] = 0
-            
-            # print_state(state)
 
 def main():
+    # test state
     test = [
         [1,2,3],
         [4,5,6],
         [7,8,0],
     ]
     z_loc = get_z_loc(test)
-    # print(test[0][1])
-    # return
-    
-    # print(test)
-
+    # Main loop
     while True:
         print_state(test)
         inp = input("Move? ")
+        # store the return value of move_match()
         temp = move_match(inp, test, z_loc)
+        # None represents an invalid move, Catch it here
+        # Update z_loc only if we get a tuple as a return value
         if temp:
             z_loc = temp
     
