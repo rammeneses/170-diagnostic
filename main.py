@@ -139,8 +139,10 @@ def main():
         print(header)
         print_state(state)
         if is_goal_state(state, solved):
+            # Taken from the answer from
+            # https://stackoverflow.com/questions/2963263/how-can-i-create-a-simple-message-box-in-python
             windll.user32.MessageBoxW(0, "You have solved the Puzzle!", "8-Puzzle", 0x00001040)
-        inp = read_input("\nMove? ").decode()
+        inp = read_input("\nInput: ").decode()
         # print(inp)
         # return
         if inp == "0":
