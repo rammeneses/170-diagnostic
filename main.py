@@ -120,7 +120,7 @@ def main():
     "[w/a/s/d] Move\n" \
     "[0] Exit\n"
     
-    solved = [
+    goal = [
         [1,2,3],
         [4,5,6],
         [7,8,0],
@@ -133,15 +133,20 @@ def main():
     ]
     state = test
     z_loc = get_z_loc(state)
+    solved = False
     # Main loop
     while True:
         clear_terminal()
         print(header)
         print_state(state)
-        if is_goal_state(state, solved):
-            # Taken from the answer from
-            # https://stackoverflow.com/questions/2963263/how-can-i-create-a-simple-message-box-in-python
-            windll.user32.MessageBoxW(0, "You have solved the Puzzle!", "8-Puzzle", 0x00001040)
+        if is_goal_state(state, goal): 
+            if not solved:
+                # Taken from the answer from
+                # https://stackoverflow.com/questions/2963263/how-can-i-create-a-simple-message-box-in-python
+                windll.user32.MessageBoxW(0, "You have solved the Puzzle!", "8-Puzzle", 0x00001040)
+                solved = True
+            else:
+                print("SOLVED!")
         inp = read_input("\nInput: ").decode()
         # print(inp)
         # return
