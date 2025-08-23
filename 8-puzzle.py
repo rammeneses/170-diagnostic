@@ -35,6 +35,24 @@ def read_input(to_print):
         return ch
 
 
+def get_file_input():
+    temp = []
+    # print("in gfi")
+    with open("input.txt", "r") as file:
+        for line in file:
+            temp3 = []
+            temp2 = line.strip().split(";")
+            for num in temp2:
+                temp3.append(int(num))
+            temp.append(temp3)
+    z_loc = get_z_loc(temp)
+    # while z_loc == None:
+    #     z_loc = get_z_loc(temp)
+    #     print(z_loc)
+    return (temp, z_loc)
+
+    
+
 # Helper Variables
 x_axis = 0
 y_axis = 1
@@ -87,6 +105,7 @@ def move_match(input, state, z_loc):
         # Returns the return value of move()
         # which is a tuple of the new location of ZERO
         return move(move_list[input], state, z_loc)
+    return
         
             
 def move(input, state, z_loc):
@@ -118,7 +137,8 @@ def move(input, state, z_loc):
 def main():
     header = "8-Puzzle CLI\n" \
     "[w/a/s/d] Move\n" \
-    "[0] Exit\n"
+    "[1] Load input.txt\n" \
+    "[0] Exit\n" 
     
     goal = [
         [1,2,3],
@@ -127,8 +147,8 @@ def main():
     ]
     # test state
     test = [
-        [2,3,0],
         [1,5,6],
+        [2,3,0],
         [4,7,8],
     ]
     state = test
@@ -136,7 +156,7 @@ def main():
     solved = False
     # Main loop
     while True:
-        clear_terminal()
+        # clear_terminal()
         print(header)
         print_state(state)
         if is_goal_state(state, goal): 
@@ -150,9 +170,17 @@ def main():
         inp = read_input("\nInput: ").decode()
         # print(inp)
         # return
-        if inp == "0":
-            print("Goodbye!")
-            break
+        match inp:
+            case "1":
+                from_file = get_file_input()
+                state = from_file[0]
+                z_loc = from_file[1]
+                print_state(state)
+                print(z_loc)
+            case "0":
+                print("Goodbye!")
+                break
+        # break
         # store the return value of move_match()
         temp = move_match(inp, state, z_loc)
         # None represents an invalid move, Catch it here
