@@ -3,6 +3,7 @@
 # GH-2L
 
 import os
+from ctypes import windll
 
 if os.name == "nt":
     import msvcrt
@@ -45,6 +46,10 @@ def get_z_loc(state):
             if state[i][j] == 0:
                 # print("z_loc", i,j)
                 return (j,i)
+
+# returns true if the current state is the goal state
+def is_goal_state(state, goal):
+    return True if state == goal else False
 
 def print_state(state):
     for line in state:
@@ -133,6 +138,8 @@ def main():
         clear_terminal()
         print(header)
         print_state(state)
+        if is_goal_state(state, solved):
+            windll.user32.MessageBoxW(0, "You have solved the Puzzle!", "8-Puzzle", 0x00001040)
         inp = read_input("\nMove? ").decode()
         # print(inp)
         # return
