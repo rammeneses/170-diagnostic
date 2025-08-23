@@ -16,9 +16,22 @@ else:
 def clear_terminal():
     os.system('cls' if os.name == 'nt' else 'clear')
 
+# Taken from:
+# https://stackoverflow.com/questions/3523174/raw-input-without-pressing-enter
+# https://code.activestate.com/recipes/134892-getch-like-unbuffered-character-reading-from-stdin/
 def read_input(to_print):
-    print(to_print)
-    return msvcrt.getch()
+    # print(to_print)
+    if os.name == 'nt':
+        return msvcrt.getch()
+    else:
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(sys.stdin.fileno())
+            ch = sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        return ch
 
 
 # Helper Variables
