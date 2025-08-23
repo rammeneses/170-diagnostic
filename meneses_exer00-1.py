@@ -1,4 +1,4 @@
-# Raohael Andrei M. Meneses
+# Raphael Andrei M. Meneses
 # 2022-13211
 # GH-2L
 
