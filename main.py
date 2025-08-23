@@ -41,8 +41,10 @@ y_axis = 1
 def get_z_loc(state):
     for i in range(len(state)):
         for j in range(len(state[i])):
+            # print(i,j)
             if state[i][j] == 0:
-                return (i,j)
+                # print("z_loc", i,j)
+                return (j,i)
 
 def print_state(state):
     for line in state:
@@ -112,11 +114,17 @@ def main():
     header = "8-Puzzle CLI\n" \
     "[w/a/s/d] Move\n" \
     "[0] Exit\n"
-    # test state
-    test = [
+    
+    solved = [
         [1,2,3],
         [4,5,6],
         [7,8,0],
+    ]
+    # test state
+    test = [
+        [2,3,0],
+        [1,5,6],
+        [4,7,8],
     ]
     state = test
     z_loc = get_z_loc(state)
