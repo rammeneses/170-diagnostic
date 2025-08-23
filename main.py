@@ -1,6 +1,27 @@
 # Raohael Andrei M. Meneses
 # 2022-13211
 # GH-2L
+
+import os
+
+if os.name == "nt":
+    import msvcrt
+else:
+    import sys
+    import tty
+    import termios
+
+# Clear Terminal taken from:
+# https://stackoverflow.com/questions/2084508/clear-the-terminal-in-python
+def clear_terminal():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def read_input(to_print):
+    print(to_print)
+    return msvcrt.getch()
+
+
+# Helper Variables
 x_axis = 0
 y_axis = 1
 
@@ -75,6 +96,9 @@ def move(input, state, z_loc):
     return new_z_loc
 
 def main():
+    header = "8-Puzzle CLI\n" \
+    "[w/a/s/d] Move\n" \
+    "[0] Exit\n"
     # test state
     test = [
         [1,2,3],
@@ -85,8 +109,15 @@ def main():
     z_loc = get_z_loc(state)
     # Main loop
     while True:
+        clear_terminal()
+        print(header)
         print_state(state)
-        inp = input("Move? ")
+        inp = read_input("\nMove? ").decode()
+        # print(inp)
+        # return
+        if inp == "0":
+            print("Goodbye!")
+            break
         # store the return value of move_match()
         temp = move_match(inp, state, z_loc)
         # None represents an invalid move, Catch it here
