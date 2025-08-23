@@ -54,8 +54,8 @@ def get_file_input():
     
 
 # Helper Variables
-x_axis = 0
-y_axis = 1
+row = 1
+col = 0
 
 def get_z_loc(state):
     for i in range(len(state)):
@@ -92,13 +92,13 @@ def move_match(input, state, z_loc):
     if input in move_list.keys():
         # Out of bounds check
         # returns None 
-        if move_list[input] == "down" and z_loc[y_axis] == 2:
+        if move_list[input] == "down" and z_loc[row] == 2:
             return
-        if move_list[input] == "up" and z_loc[y_axis] == 0:
+        if move_list[input] == "up" and z_loc[row] == 0:
             return
-        if move_list[input] == "right" and z_loc[x_axis] == 2:
+        if move_list[input] == "right" and z_loc[col] == 2:
             return
-        if move_list[input] == "left" and z_loc[x_axis] == 0:
+        if move_list[input] == "left" and z_loc[col] == 0:
             return
         
         # print(move_list[input])
@@ -114,23 +114,23 @@ def move(input, state, z_loc):
     # match case to set the coordinates for a swap
     match input:
         case "up":
-            swap_x = z_loc[x_axis]
-            swap_y = z_loc[y_axis] - 1
+            swap_row = z_loc[row] - 1
+            swap_col = z_loc[col]
         case "down":
-            swap_x = z_loc[x_axis]
-            swap_y = z_loc[y_axis] + 1
+            swap_row = z_loc[row] + 1
+            swap_col = z_loc[col]
         case "left":
-            swap_x = z_loc[x_axis] - 1
-            swap_y = z_loc[y_axis]
+            swap_row = z_loc[row]
+            swap_col = z_loc[col] - 1
         case "right":
-            swap_x = z_loc[x_axis] + 1
-            swap_y = z_loc[y_axis]
+            swap_row = z_loc[row]
+            swap_col = z_loc[col] + 1
     # swap proper
-    new_z_loc = (swap_x, swap_y)
+    new_z_loc = (swap_col, swap_row)
     # set the location of 0 to the number that it will swap with
-    state[z_loc[y_axis]][z_loc[x_axis]] = state[new_z_loc[y_axis]][new_z_loc[x_axis]]
+    state[z_loc[row]][z_loc[col]] = state[new_z_loc[row]][new_z_loc[col]]
     # since we know that 0 will be moved
-    state[new_z_loc[y_axis]][new_z_loc[x_axis]] = 0
+    state[new_z_loc[row]][new_z_loc[col]] = 0
     # return the updated location of zero
     return new_z_loc
 
