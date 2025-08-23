@@ -1,6 +1,7 @@
 # Raphael Andrei M. Meneses
 # 2022-13211
 # GH-2L
+# NOTE: I can't find the statement on the Responsible Use of AI in the Course Guide
 
 import os
 from ctypes import windll
