@@ -80,13 +80,15 @@ def tic_recursion(state, valid_move, move, loc, player_1_turn):
     winner = check_winner(state)
     # If there is a winner or a tie
     if winner:
-        print(f"{winner} wins!")
         match winner:
             case "X":
+                print(f"{winner} wins!")
                 windll.user32.MessageBoxW(0, "Player 1(X) WINS!", "Tic-Tac-Toe", 0x00001040)
             case "O":
+                print(f"{winner} wins!")
                 windll.user32.MessageBoxW(0, "Player 2(O) WINS!", "Tic-Tac-Toe", 0x00001040)
             case "-":
+                print("TIE!")
                 windll.user32.MessageBoxW(0, "TIE!", "Tic-Tac-Toe", 0x00001040)
         return winner
     
@@ -126,7 +128,9 @@ def tic_recursion(state, valid_move, move, loc, player_1_turn):
 
 def main():
     state = [
-        # ["X","X","-"],
+        # ["X","O","O"],
+        # ["O","X","-"],
+        # ["X","X","O"],
         ["-","-","-"],
         ["-","-","-"],
         ["-","-","-"],
