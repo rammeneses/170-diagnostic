@@ -11,6 +11,7 @@ from ctypes import windll
 def clear_terminal():
     os.system('cls' if os.name == 'nt' else 'clear')
 
+# from 8-puzzle
 def print_state(state):
     for line in state:
         for char in line:
@@ -77,6 +78,7 @@ def tic_recursion(state, valid_move, move, loc, player_1_turn):
     print_state(state)
     print("")
 
+    # basically acts like the base case
     winner = check_winner(state)
     # If there is a winner or a tie
     if winner:
@@ -95,18 +97,25 @@ def tic_recursion(state, valid_move, move, loc, player_1_turn):
     current_turn = "Player 1(X) turn" if player_1_turn else "Player 2(O) turn"
     print(current_turn)
 
-    # 
+    # main recursion step
+    # handling row and col input
     match loc:
+        # row input
         case 0:
             inp = input("Move(row): ")
             match inp:
                 case "q":
                     print("Goodbye!")
                     return
+                # valid move
+                # call tic_recursion with the typecasted input 
+                # and update loc to get col input
                 case "0" | "1" | "2":
                     tic_recursion(state, True, int(inp), 1, player_1_turn)
+                # invalid input, call tic_recursion again with the same variables
                 case _:
                     tic_recursion(state, False, move, loc, player_1_turn)
+        # col input
         case 1:
             inp = input("Move(column): ")
             match inp:
@@ -114,14 +123,22 @@ def tic_recursion(state, valid_move, move, loc, player_1_turn):
                     print("Goodbye!")
                     return
                 case "b":
+                    # go back to row input with placeholder move
                     tic_recursion(state, True, -2, 0, player_1_turn)
                 case "0" | "1" | "2":
+                    # validate move if it is empty
                     validated_move = validate_move((move, int(inp)), state)
+                    # if empty, update the board state
+                    # and pass to next player 
                     if validated_move:
                         state[move][int(inp)] = "X" if player_1_turn else "O"
-                        tic_recursion(state, True, int(inp), 0, not player_1_turn)
+                        tic_recursion(state, True, -2, 0, not player_1_turn)
+                    # if it is occupied, get col input again
+                    # by calling tic_recursion again with the same variables
+                    # set valid_move to false to inform the player on the next call
                     else:
                         tic_recursion(state, False, move, loc, player_1_turn)
+                # invalid input, call tic_recursion again with the same variables
                 case _:
                     tic_recursion(state, False, move, loc, player_1_turn)
 
@@ -136,7 +153,7 @@ def main():
         ["-","-","-"],
     ]
     player_1_turn = True
-    # Main loop
+    # Main call
     tic_recursion(state, True, -2, 0, player_1_turn)
     return
 
