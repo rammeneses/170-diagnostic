@@ -17,22 +17,54 @@ def print_state(state):
             print(char, end=" ")
         print()
 
+# returns false for moves on already filled spaces
+# returns true otherwise
+def validate_move(move, state):
+    if state[move[0]][move[1]] != "-":
+        return False
+    return True
 
-# TODO: fix player turns
-def manage_move(move, state, player_1_turn):
-    row = move[0]
-    col = move[1]
-
-    # Getting the player type
-    player = "O"
-    if player_1_turn:
-        player = "X"
-    # Doing the move
-    state[row][col] = player
-    print("in mm")
+def tic_recursion(state, valid_move, move, loc, player_1_turn):
+    header = "Tic-Tac-Toe"
+    instructions = "[0/1/2] Moves\n" \
+    "[b] Back to move(row)\n" \
+    "[q] Quit\n"
+    print(header)
+    print(instructions)
+    if not valid_move:
+        print("Invalid move!")
     print_state(state)
-    # inverting the player turn boolean
-    return not player_1_turn
+    current_turn = "\nPlayer 1(X) turn" if player_1_turn else "\nPlayer 2(O) turn"
+    print(current_turn)
+    match loc:
+        case 0:
+            inp = input("Move(row): ")
+            match inp:
+                case "q":
+                    print("Goodbye!")
+                    return
+                case "0" | "1" | "2":
+                    tic_recursion(state, True, int(inp), 1, player_1_turn)
+                case _:
+                    tic_recursion(state, False, move, loc, player_1_turn)
+        case 1:
+            inp = input("Move(column): ")
+            match inp:
+                case "q":
+                    print("Goodbye!")
+                    return
+                case "b":
+                    tic_recursion(state, True, -2, 0, player_1_turn)
+                case "0" | "1" | "2":
+                    validated_move = validate_move((move, int(inp)), state)
+                    if validated_move:
+                        state[move][int(inp)] = "X" if player_1_turn else "O"
+                        tic_recursion(state, True, int(inp), 0, not player_1_turn)
+                    else:
+                        tic_recursion(state, False, move, loc, player_1_turn)
+                case _:
+                    tic_recursion(state, False, move, loc, player_1_turn)
+            pass
     pass
 
 # TODO: add win conditions
@@ -45,6 +77,8 @@ def main():
     player_1_turn = True
     header = "Tic-Tac-Toe"
     # Main loop
+    tic_recursion(state, True, -2, 0, player_1_turn)
+    return
     while True:
         print(header)
         if player_1_turn:
@@ -68,30 +102,4 @@ def main():
             continue
         # managing and making the move
         manage_move(move, state, player_1_turn)
-
-# returns false for out of bounds moves and moves on already filled spaces
-# returns true otherwise
-def validate_move(move, state):
-    for num in move:
-        print(num)
-        if int(num) < 0 or int(num) > 2:
-            return False
-    if state[move[0]][move[1]] != "-":
-        return False
-    return True
-
-def manage_input(state):
-    temp1 = input("Move[0]: ")
-    # pre-emptive return for quitting the program
-    if temp1 == "q":
-        return temp1
-    temp2 = input("Move[1]: ")
-    # pre-emptive return for quitting the program
-    if temp2 == "q":
-        return temp2
-    # 
-    move = (int(temp1), int(temp2))
-    return move
-
-
 main()
