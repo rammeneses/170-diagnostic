@@ -6,6 +6,7 @@
 
 import os
 from ctypes import windll
+import copy
 
 if os.name == "nt":
     import msvcrt
@@ -96,14 +97,58 @@ def actions(state):
     # checking is done UDLR
     pass
 
-def move_result(state, action):
+def is_empty(list):
+    if list == []:
+        return True
+    return False
     pass
+
+# assumes moves are in bounds
+# deepcopy idea taken from:
+# https://www.geeksforgeeks.org/python/python-cloning-copying-list/
+def move_result(state, action):
+    temp = copy.deepcopy(state)
+    print_state(temp)
+    z_loc = get_z_loc(temp)
+
+    match action:
+        case "up":
+            swap_row = z_loc[row] - 1
+            swap_col = z_loc[col]
+        case "down":
+            swap_row = z_loc[row] + 1
+            swap_col = z_loc[col]
+        case "left":
+            swap_row = z_loc[row]
+            swap_col = z_loc[col] - 1
+        case "right":
+            swap_row = z_loc[row]
+            swap_col = z_loc[col] + 1
+    # swap proper
+    new_z_loc = (swap_col, swap_row)
+    # set the location of 0 to the number that it will swap with
+    temp[z_loc[row]][z_loc[col]] = temp[new_z_loc[row]][new_z_loc[col]]
+    # since we know that 0 will be moved
+    temp[new_z_loc[row]][new_z_loc[col]] = 0
+    
+    return temp
 
 def ActionCost(start_state, actions, end_state):
     pass
 
 def bfs(state):
-    pass
+    frontier = copy.deepcopy(state)
+    explored = []
+    while not is_empty(frontier):
+        # basically dequeue
+        currentState = frontier.pop(0)
+        if(is_goal_state(currentState)):
+            return currentState
+        else:
+            for a in actions(currentState):
+                result = move_result(currentState, a)
+                if result not in explored and result not in frontier:
+                    frontier.append(result)
 
 def dfs(state):
     pass
@@ -194,7 +239,7 @@ def main():
     "[w/a/s/d] Move\n" \
     "[1] Load input.txt\n" \
     "[0] Exit\n" 
-    
+
     # test state
     test = [
         [1,5,6],
@@ -232,6 +277,12 @@ def main():
                 state = from_file[0]
                 z_loc = from_file[1]
                 solvable = verify_solvable(state)
+            case "2":
+                move_result(state, "up")
+            
+            case "3":
+                print_state(state)
+            
             case "0":
                 print("Goodbye!")
                 break
