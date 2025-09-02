@@ -117,7 +117,11 @@ def get_z_loc(state):
                 return (j,i)
 
 # returns true if the current state is the goal state
-def is_goal_state(state, goal):
+def is_goal_state(state, goal = [
+        [1,2,3],
+        [4,5,6],
+        [7,8,0],
+    ]):
     return True if state == goal else False
 
 def print_state(state):
@@ -191,11 +195,6 @@ def main():
     "[1] Load input.txt\n" \
     "[0] Exit\n" 
     
-    goal = [
-        [1,2,3],
-        [4,5,6],
-        [7,8,0],
-    ]
     # test state
     test = [
         [1,5,6],
@@ -216,7 +215,7 @@ def main():
             print("NOT SOLVABLE!")
             windll.user32.MessageBoxW(0, "The Puzzle is not solvable!", "8-Puzzle", 0x00001010)
 
-        if is_goal_state(state, goal): 
+        if is_goal_state(state): 
             if not solved:
                 # Taken from the answer from
                 # https://stackoverflow.com/questions/2963263/how-can-i-create-a-simple-message-box-in-python
