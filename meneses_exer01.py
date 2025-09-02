@@ -94,8 +94,18 @@ col = 0
 
 def actions(state):
     legal_actions = []
-    # checking is done UDLR
-    pass
+    # checking is done UDRL
+    temp = copy.deepcopy(state)
+    z_loc = get_z_loc(temp)
+    if z_loc[row] != 0:
+        legal_actions.append("up")
+    if z_loc[row] != 2:
+        legal_actions.append("down")
+    if z_loc[col] != 2:
+        legal_actions.append("right")
+    if z_loc[col] != 0:
+        legal_actions.append("left")
+    return legal_actions
 
 def is_empty(list):
     if list == []:
@@ -268,7 +278,11 @@ def main():
                 solved = True
             else:
                 print("SOLVED!")
-        inp = read_input("\nInput: ").decode()
+        try:
+            inp = read_input("\nInput: ").decode()
+        except:
+            print("Invalid Input!")
+            continue
         # print(inp)
         # return
         match inp:
@@ -282,6 +296,8 @@ def main():
             
             case "3":
                 print_state(state)
+            case "4":
+                print(actions(state))
             
             case "0":
                 print("Goodbye!")
