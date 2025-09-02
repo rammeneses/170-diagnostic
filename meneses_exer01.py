@@ -143,22 +143,40 @@ def move_result(state, action):
     
     return temp
 
-def ActionCost(start_state, actions, end_state):
+def actionCost(actions):
+    return(len(actions))
     pass
 
 def bfs(state):
-    frontier = copy.deepcopy(state)
+    # frontier is formatted as
+    # (state, path)
+    frontier = [(copy.deepcopy(state), [])]
+    # print(frontier)
+    # explored is just a list of states
     explored = []
     while not is_empty(frontier):
         # basically dequeue
-        currentState = frontier.pop(0)
+        current = frontier.pop(0)
+        currentState = current[0]
+        path = current[1]
+        explored.append(currentState)
+        # print(frontier)
+        # print(f"currentState: {currentState}")
         if(is_goal_state(currentState)):
-            return currentState
+            return {
+                "solution":path,
+                "path_cost":actionCost(path),
+                "explored":len(explored)
+            }
         else:
             for a in actions(currentState):
+                # print(f"a: {a}")
                 result = move_result(currentState, a)
+                p = path.copy()
+                p.append(a)
+                # print_state(result)
                 if result not in explored and result not in frontier:
-                    frontier.append(result)
+                    frontier.append((result, p))
 
 def dfs(state):
     pass
@@ -251,9 +269,14 @@ def main():
     "[0] Exit\n" 
 
     # test state
+    # test = [
+    #     [1,5,6],
+    #     [2,3,0],
+    #     [4,7,8],
+    # ]
     test = [
-        [1,5,6],
         [2,3,0],
+        [1,5,6],
         [4,7,8],
     ]
     state = test
@@ -297,7 +320,7 @@ def main():
             case "3":
                 print_state(state)
             case "4":
-                print(actions(state))
+                print(bfs(state))
             
             case "0":
                 print("Goodbye!")
