@@ -98,13 +98,13 @@ def actions(state):
     temp = copy.deepcopy(state)
     z_loc = get_z_loc(temp)
     if z_loc[row] != 0:
-        legal_actions.append("up")
+        legal_actions.append("U")
     if z_loc[row] != 2:
-        legal_actions.append("down")
+        legal_actions.append("D")
     if z_loc[col] != 2:
-        legal_actions.append("right")
+        legal_actions.append("R")
     if z_loc[col] != 0:
-        legal_actions.append("left")
+        legal_actions.append("L")
     return legal_actions
 
 def is_empty(list):
@@ -116,22 +116,24 @@ def is_empty(list):
 # assumes moves are in bounds
 # deepcopy idea taken from:
 # https://www.geeksforgeeks.org/python/python-cloning-copying-list/
+# NOTE: different from move_match that the player input does
+#       but is basically the same
 def move_result(state, action):
     temp = copy.deepcopy(state)
     print_state(temp)
     z_loc = get_z_loc(temp)
 
     match action:
-        case "up":
+        case "U":
             swap_row = z_loc[row] - 1
             swap_col = z_loc[col]
-        case "down":
+        case "D":
             swap_row = z_loc[row] + 1
             swap_col = z_loc[col]
-        case "left":
+        case "L":
             swap_row = z_loc[row]
             swap_col = z_loc[col] - 1
-        case "right":
+        case "R":
             swap_row = z_loc[row]
             swap_col = z_loc[col] + 1
     # swap proper
@@ -141,18 +143,18 @@ def move_result(state, action):
     # since we know that 0 will be moved
     temp[new_z_loc[row]][new_z_loc[col]] = 0
     
+    # retun the new state after the move
     return temp
 
 def actionCost(actions):
     return(len(actions))
-    pass
 
 def bfs(state):
     # frontier is formatted as
     # (state, path)
     frontier = [(copy.deepcopy(state), [])]
     # print(frontier)
-    # explored is just a list of states
+    # explored is just a list of states, no paths
     explored = []
     while not is_empty(frontier):
         # basically dequeue
@@ -179,6 +181,58 @@ def bfs(state):
                     frontier.append((result, p))
 
 def dfs(state):
+    # frontier is formatted as
+    # (state, path)
+    frontier = [(copy.deepcopy(state), [])]
+    # print(frontier)
+    # explored is just a list of states
+    explored = []
+    while not is_empty(frontier):
+        current = frontier.pop()
+        currentState = current[0]
+        path = current[1]
+        explored.append(currentState)
+        # print(frontier)
+        # print(f"currentState: {currentState}")
+        if(is_goal_state(currentState)):
+            return {
+                "solution":path,
+                "path_cost":actionCost(path),
+                "explored":len(explored)
+            }
+        else:
+            for a in actions(currentState):
+                # print(f"a: {a}")
+                result = move_result(currentState, a)
+                p = path.copy()
+                p.append(a)
+                # print_state(result)
+                if result not in explored and result not in frontier:
+                    frontier.append((result, p))
+    pass
+
+# assumes results_dict is from bfs or dfs
+def parse_results(results_dict):
+    # print(results_dict)
+    # print(results_dict.get("solution"))
+    decoded_list = []
+    soln = ''.join(results_dict.get("solution"))
+    for char in soln:
+        match char:
+            case 'U':
+                decoded_list.append("S")
+            case 'D':
+                decoded_list.append("W")
+            case 'R':
+                decoded_list.append("A")
+            case 'L':
+                decoded_list.append("D")
+    decoded = "".join(decoded_list)
+    
+    print(f"Solution: {soln}")
+    print(f"Decoded: {decoded}")
+    print(f"Cost: {results_dict.get("path_cost")}")
+    print(f"Explored: {results_dict.get("explored")}\n")
     pass
 
 def get_z_loc(state):
@@ -207,26 +261,26 @@ def move_match(input, state, z_loc):
     # NOTE: The wasd keys represent movement of the NON-ZERO tiles
     #   The dictionary values represent the movement of the ZERO tile
     move_list = {
-        "w": "down",
-        "W": "down",
-        "a": "right",
-        "A": "right",
-        "s": "up",
-        "S": "up",
-        "d": "left",
-        "D": "left"
+        "w": "D",
+        "W": "D",
+        "a": "R",
+        "A": "R",
+        "s": "U",
+        "S": "U",
+        "d": "L",
+        "D": "L"
     }
     # input verification
     if input in move_list.keys():
         # Out of bounds check
         # returns None 
-        if move_list[input] == "down" and z_loc[row] == 2:
+        if move_list[input] == "D" and z_loc[row] == 2:
             return
-        if move_list[input] == "up" and z_loc[row] == 0:
+        if move_list[input] == "U" and z_loc[row] == 0:
             return
-        if move_list[input] == "right" and z_loc[col] == 2:
+        if move_list[input] == "R" and z_loc[col] == 2:
             return
-        if move_list[input] == "left" and z_loc[col] == 0:
+        if move_list[input] == "L" and z_loc[col] == 0:
             return
         
         # print(move_list[input])
@@ -241,16 +295,16 @@ def move(input, state, z_loc):
     # print(z_loc)
     # match case to set the coordinates for a swap
     match input:
-        case "up":
+        case "U":
             swap_row = z_loc[row] - 1
             swap_col = z_loc[col]
-        case "down":
+        case "D":
             swap_row = z_loc[row] + 1
             swap_col = z_loc[col]
-        case "left":
+        case "L":
             swap_row = z_loc[row]
             swap_col = z_loc[col] - 1
-        case "right":
+        case "R":
             swap_row = z_loc[row]
             swap_col = z_loc[col] + 1
     # swap proper
@@ -283,11 +337,14 @@ def main():
     z_loc = get_z_loc(state)
     solved = False
     solvable = verify_solvable(state)
+    search_results = None
     # print(solvable)
     # Main loop
     while True:
         # clear_terminal()
         print(header)
+        if search_results:
+            parse_results(search_results)
         print_state(state)
         if not solvable:
             print("NOT SOLVABLE!")
@@ -314,13 +371,10 @@ def main():
                 state = from_file[0]
                 z_loc = from_file[1]
                 solvable = verify_solvable(state)
-            case "2":
-                move_result(state, "up")
-            
             case "3":
-                print_state(state)
+                search_results = bfs(state)
             case "4":
-                print(bfs(state))
+                search_results = dfs(state)
             
             case "0":
                 print("Goodbye!")
