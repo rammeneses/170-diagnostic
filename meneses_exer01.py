@@ -1,6 +1,7 @@
 # Raphael Andrei M. Meneses
 # 2022-13211
 # GH-2L
+# Exercise 1: BFS & DFS
 # NOTE: I can't find the statement on the Responsible Use of AI in the Course Guide
 
 import os
@@ -89,6 +90,23 @@ def flatten_list(state):
 # Helper Variables
 row = 1
 col = 0
+
+def actions(state):
+    legal_actions = []
+    # checking is done UDLR
+    pass
+
+def move_result(state, action):
+    pass
+
+def ActionCost(start_state, actions, end_state):
+    pass
+
+def bfs(state):
+    pass
+
+def dfs(state):
+    pass
 
 def get_z_loc(state):
     for i in range(len(state)):
