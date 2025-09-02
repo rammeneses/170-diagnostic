@@ -120,7 +120,7 @@ def is_empty(list):
 #       but is basically the same
 def move_result(state, action):
     temp = copy.deepcopy(state)
-    print_state(temp)
+    # print_state(temp)
     z_loc = get_z_loc(temp)
 
     match action:
@@ -320,6 +320,8 @@ def main():
     header = "8-Puzzle CLI\n" \
     "[w/a/s/d] Move\n" \
     "[1] Load input.txt\n" \
+    "[2] BFS\n" \
+    "[3] DFS\n" \
     "[0] Exit\n" 
 
     # test state
@@ -371,9 +373,9 @@ def main():
                 state = from_file[0]
                 z_loc = from_file[1]
                 solvable = verify_solvable(state)
-            case "3":
+            case "2":
                 search_results = bfs(state)
-            case "4":
+            case "3":
                 search_results = dfs(state)
             
             case "0":
